@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "186740760817",
+    "project_id": "taskmatchapp",
+    "storage_bucket": "taskmatchapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186740760817:android:9f286e957802610a234950",
+        "android_client_info": {
+          "package_name": "com.example.taskmatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186740760817-e0opn6ee5kvv5hb9p20u28gdvftmgavc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDAsCK9HDi_4TOG8X8wNeX-qKW82cy-Bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186740760817-e0opn6ee5kvv5hb9p20u28gdvftmgavc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
