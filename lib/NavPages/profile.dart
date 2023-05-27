@@ -24,7 +24,7 @@ class profile extends StatelessWidget {
           ),
         ],
       ),
-      body: ProfileDashboard(),
+      body: RootPage(),
     );
   }
 }

@@ -1,85 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:taskmatch/util/update_profile_form.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class UpdateProfile extends StatefulWidget {
+  const UpdateProfile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.green,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.white),
-          bodyMedium: TextStyle(color: Colors.white),
-          headlineMedium: TextStyle(color: Colors.white),
-          headlineSmall: TextStyle(color: Colors.white),
-          titleLarge: TextStyle(color: Colors.white),
-        ),
-      ),
-      home: const RootPage(),
-    );
-  }
+  State<UpdateProfile> createState() => _UpdateProfileState();
 }
 
-class RootPage extends StatefulWidget {
-  const RootPage({Key? key}) : super(key: key);
-
-  @override
-  State<RootPage> createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  int currentPage = 0;
-  int _selectedIndex = 2;
-  int currentIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (_selectedIndex == 1) {
-      _buildSearchBar();
-    }
-
-    if (_selectedIndex == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return const UpdateProfile();
-          },
-        ),
-      );
-    }
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-        ),
-      ),
-    );
-  }
+class _UpdateProfileState extends State<UpdateProfile> {
+  //const UpdateProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      appBar: AppBar(
+        title: const Text('TaskMatch'),
+        backgroundColor: Colors.green,
+      ),
       body: Container(
         color: Colors.green,
         child: Column(
@@ -89,7 +26,7 @@ class _RootPageState extends State<RootPage> {
             Row(
               children: [
                 const Text(
-                  'Profile',
+                  'Update Profile',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
@@ -144,25 +81,7 @@ class _RootPageState extends State<RootPage> {
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.white,
                   ),
-                  child: const Text('Update Profile'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return const ChangePassword();
-                        },
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                  ),
-                  child: const Text('Change Password'),
+                  child: const Text('Update'),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -170,7 +89,6 @@ class _RootPageState extends State<RootPage> {
           ],
         ),
       ),
-
     );
   }
 }
@@ -236,26 +154,35 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
             ),
           ),
+          TextFormField(
+            decoration: const InputDecoration(
+              icon: Icon(Icons.password, color: Colors.white),
+              hintText: 'Enter your password',
+              labelText: 'Password',
+              labelStyle: TextStyle(color: Colors.white),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+          TextFormField(
+            decoration: const InputDecoration(
+              icon: Icon(Icons.password, color: Colors.white),
+              hintText: 'Reenter your password',
+              labelText: 'Confirm Password',
+              labelStyle: TextStyle(color: Colors.white),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class ChangePassword extends StatelessWidget {
-  const ChangePassword({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Password'),
-      ),
-      body: const Center(
-        child: Text(
-          'This is the change password screen.',
-          style: TextStyle(color: Colors.black),
-        ),
       ),
     );
   }
