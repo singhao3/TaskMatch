@@ -13,7 +13,6 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
   TextEditingController _taskTitleController = TextEditingController();
   TextEditingController _taskDescriptionController = TextEditingController();
   TextEditingController _taskBudgetController = TextEditingController();
-  String _imagePath = '';
   File? _imageFile;
 
   Future<void> _uploadImage() async {
@@ -21,10 +20,6 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      setState(() {
-        _imagePath = pickedImage.path;
-      });
-
       File imageFile = File(pickedImage.path);
 
       // Display the uploaded image
@@ -38,14 +33,13 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
     try {
       // Upload the image to Firebase Storage if an image is selected
       String imageUrl = '';
-      if (_imagePath.isNotEmpty) {
-        final file = File(_imagePath);
+      if (_imageFile != null) {
         final imageName = DateTime.now().millisecondsSinceEpoch.toString();
         final storageRef = firebase_storage.FirebaseStorage.instance
             .ref()
             .child('task_images')
             .child('$imageName.jpg');
-        await storageRef.putFile(file);
+        await storageRef.putFile(_imageFile!);
         imageUrl = await storageRef.getDownloadURL();
       }
 
@@ -63,7 +57,7 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
       _taskDescriptionController.clear();
       _taskBudgetController.clear();
       setState(() {
-        _imagePath = '';
+        _imageFile = null;
       });
 
       // Show a success message to the user
@@ -82,8 +76,9 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
           ],
         ),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error posting task: $e');
+      print('Stack trace: $stackTrace');
       // Show an error message to the user
       showDialog(
         context: context,
