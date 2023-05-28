@@ -49,9 +49,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
         // Store role-specific information
         if (_selectedRole == UserRole.TaskDoer) {
-          await _storeTaskDoerInfo(user.uid);
+          await _storeTaskDoerInfo(user.uid, user.email!);
         } else {
-          await _storeTaskSeekerInfo(user.uid);
+          await _storeTaskSeekerInfo(user.uid, user.email!);
         }
 
         // Navigate to the appropriate home screen based on role
@@ -64,7 +64,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  Future<void> _storeTaskDoerInfo(String userId) async {
+  Future<void> _storeTaskDoerInfo(String userId, String email) async {
     try {
       // Retrieve the values entered by the user
       String name = _nameController.text.trim();
@@ -74,8 +74,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // Store the task-doer specific information in Firestore or a separate collection
       // Example: Create a 'task_doers' collection and store the user information under the user's document
-      await FirebaseFirestore.instance.collection('task_doers').doc(userId).set({
+      await FirebaseFirestore.instance
+          .collection('task_doers')
+          .doc(userId)
+          .set({
         'name': name,
+        'email': email,
         'phoneNumber': phoneNumber,
         'skills': skills,
         'preferences': preferences,
@@ -86,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  Future<void> _storeTaskSeekerInfo(String userId) async {
+  Future<void> _storeTaskSeekerInfo(String userId, String email) async {
     try {
       // Retrieve the values entered by the user
       String name = _nameController.text.trim();
@@ -94,8 +98,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // Store the task-seeker specific information in Firestore or a separate collection
       // Example: Create a 'task_seekers' collection and store the user information under the user's document
-      await FirebaseFirestore.instance.collection('task_seekers').doc(userId).set({
+      await FirebaseFirestore.instance
+          .collection('task_seekers')
+          .doc(userId)
+          .set({
         'name': name,
+        'email': email,
         'phoneNumber': phoneNumber,
       });
     } catch (e) {
