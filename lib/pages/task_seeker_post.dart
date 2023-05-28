@@ -14,6 +14,7 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
   TextEditingController _taskDescriptionController = TextEditingController();
   TextEditingController _taskBudgetController = TextEditingController();
   String _imagePath = '';
+  File? _imageFile;
 
   Future<void> _uploadImage() async {
     final picker = ImagePicker();
@@ -22,6 +23,13 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
     if (pickedImage != null) {
       setState(() {
         _imagePath = pickedImage.path;
+      });
+
+      File imageFile = File(pickedImage.path);
+
+      // Display the uploaded image
+      setState(() {
+        _imageFile = imageFile;
       });
     }
   }
@@ -159,9 +167,9 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
                 ),
               ),
               SizedBox(height: 16.0),
-              if (_imagePath.isNotEmpty)
-                Image.asset(
-                  _imagePath,
+              if (_imageFile != null)
+                Image.file(
+                  _imageFile!,
                   height: 150.0,
                   fit: BoxFit.cover,
                 ),
