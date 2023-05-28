@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'dart:io';
 
 class TaskSeekerInterface extends StatefulWidget {
   @override
@@ -20,6 +23,75 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
       setState(() {
         _imagePath = pickedImage.path;
       });
+    }
+  }
+
+  Future<void> _postTask() async {
+    try {
+      // Upload the image to Firebase Storage if an image is selected
+      String imageUrl = '';
+      if (_imagePath.isNotEmpty) {
+        final file = File(_imagePath);
+        final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+        final storageRef = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child('task_images')
+            .child('$imageName.jpg');
+        await storageRef.putFile(file);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+
+      // Create a task document in Firestore
+      await FirebaseFirestore.instance.collection('tasks').add({
+        'title': _taskTitleController.text.trim(),
+        'description': _taskDescriptionController.text.trim(),
+        'budget': double.parse(_taskBudgetController.text.trim()),
+        'image': imageUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Reset the form fields after posting the task
+      _taskTitleController.clear();
+      _taskDescriptionController.clear();
+      _taskBudgetController.clear();
+      setState(() {
+        _imagePath = '';
+      });
+
+      // Show a success message to the user
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Task Posted'),
+          content: Text('Your task has been successfully posted.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print('Error posting task: $e');
+      // Show an error message to the user
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('An error occurred while posting the task.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -95,9 +167,7 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
                 ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: () {
-                  // Code to handle task submission
-                },
+                onPressed: _postTask,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
