@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskmatch/util/profilegrid.dart';
+import 'package:taskmatch/pages/profilepage/rootpage.dart';
 
 class profile extends StatelessWidget {
   const profile({super.key});
@@ -9,21 +9,21 @@ class profile extends StatelessWidget {
     return Scaffold(
       
 
-      appBar: AppBar(
-        title: Text(
-          'Task Seeker',
-          textAlign: TextAlign.right,
-        ),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // TODO: Implement settings action
-            },
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Task Seeker',
+      //     textAlign: TextAlign.right,
+      //   ),
+      //   automaticallyImplyLeading: false,
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.settings),
+      //       onPressed: () {
+      //         // TODO: Implement settings action
+      //       },
+      //     ),
+      //   ],
+      // ),
       body: RootPage(),
     );
   }
