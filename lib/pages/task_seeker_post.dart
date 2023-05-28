@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'dart:io';
 
 class TaskSeekerInterface extends StatefulWidget {
   @override
@@ -10,16 +13,88 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
   TextEditingController _taskTitleController = TextEditingController();
   TextEditingController _taskDescriptionController = TextEditingController();
   TextEditingController _taskBudgetController = TextEditingController();
-  String _imagePath = '';
+  File? _imageFile;
 
   Future<void> _uploadImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
+      File imageFile = File(pickedImage.path);
+
+      // Display the uploaded image
       setState(() {
-        _imagePath = pickedImage.path;
+        _imageFile = imageFile;
       });
+    }
+  }
+
+  Future<void> _postTask() async {
+    try {
+      // Upload the image to Firebase Storage if an image is selected
+      String imageUrl = '';
+      if (_imageFile != null) {
+        final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+        final storageRef = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child('task_images')
+            .child('$imageName.jpg');
+        await storageRef.putFile(_imageFile!);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+
+      // Create a task document in Firestore
+      await FirebaseFirestore.instance.collection('tasks').add({
+        'title': _taskTitleController.text.trim(),
+        'description': _taskDescriptionController.text.trim(),
+        'budget': double.parse(_taskBudgetController.text.trim()),
+        'image': imageUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Reset the form fields after posting the task
+      _taskTitleController.clear();
+      _taskDescriptionController.clear();
+      _taskBudgetController.clear();
+      setState(() {
+        _imageFile = null;
+      });
+
+      // Show a success message to the user
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Task Posted'),
+          content: Text('Your task has been successfully posted.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e, stackTrace) {
+      print('Error posting task: $e');
+      print('Stack trace: $stackTrace');
+      // Show an error message to the user
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('An error occurred while posting the task.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -87,17 +162,15 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
                 ),
               ),
               SizedBox(height: 16.0),
-              if (_imagePath.isNotEmpty)
-                Image.asset(
-                  _imagePath,
+              if (_imageFile != null)
+                Image.file(
+                  _imageFile!,
                   height: 150.0,
                   fit: BoxFit.cover,
                 ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: () {
-                  // Code to handle task submission
-                },
+                onPressed: _postTask,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
