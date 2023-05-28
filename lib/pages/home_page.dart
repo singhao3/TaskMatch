@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     discover(),
     history(),
-    home(),
+    Home(),
     message(),
     profile(),
   ];

@@ -1,80 +1,46 @@
 import 'package:flutter/material.dart';
-
 import '../util/homegrid.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
-// class home extends StatelessWidget {
-//   const home({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-      
-//       body: homegrid(),
-//     );
-//   }
-// }
-class home extends StatelessWidget {
-  const home({Key? key});
+class Home extends StatelessWidget {
+  const Home({Key? key});
 
   @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-      
-  //     body: Padding(
-  //       padding: EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.stretch,
-  //         children: [
-  //           Text(
-  //             'Welcome to TaskMatch',
-  //             style: TextStyle(
-  //               fontSize: 24,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //           SizedBox(height: 24),
-  //           Expanded(
-  //             child: homegrid(),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.lightGreen,
-              Colors.white30,
+              Colors.lightGreen[200]!,
+              Colors.white,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 80.0),
-              Text(
-                'Welcome to TaskMatch',
-                style: TextStyle(
+              SizedBox(height: 40.0),
+              TypewriterAnimatedTextKit( 
+                text: ['Welcome to TaskMatch'],
+                textStyle: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto', 
-                  color: Colors.white,
+                  fontFamily: 'Pacifico', 
+                  color: Colors.black,
                 ),
                 textAlign: TextAlign.center,
+                speed: Duration(milliseconds: 200),
               ),
               SizedBox(height: 48.0),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16.0),
                     boxShadow: [
                       BoxShadow(
@@ -86,8 +52,8 @@ class home extends StatelessWidget {
                     ],
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: homegrid(),
+                    padding: const EdgeInsets.all(20.0),
+                    child: HomeGrid(),
                   ),
                 ),
               ),
