@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     // Center(child: Text('Profile')),
     discover(),
     history(),
-    home(),
+    Home(),
     message(),
     profile(),
   ];
