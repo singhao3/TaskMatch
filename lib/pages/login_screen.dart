@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../auth.dart';
 import 'forgot.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -76,13 +76,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildEntryField(String title, TextEditingController controller) {
     return Container(
       width: 300,
-      height: 100,
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           labelText: title,
-          border: const OutlineInputBorder(),
+          border: OutlineInputBorder(),
+          prefixIcon: Icon(Icons.person),
         ),
       ),
     );
@@ -90,40 +91,48 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildPasswordField() {
     return Container(
-      width: 400,
-      height: 100,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: const TextField(
+      width: 300,
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextField(
+        controller: _controllerPassword,
         obscureText: true,
         decoration: InputDecoration(
           labelText: 'Password',
           border: OutlineInputBorder(),
+          prefixIcon: Icon(Icons.lock),
         ),
       ),
     );
   }
 
   Widget buildErrorMessage() {
-    return Text(errorMessage == '' ? '' : 'Hmmm ? $errorMessage');
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        errorMessage == '' ? '' : 'Hmm... $errorMessage',
+        style: TextStyle(color: Colors.red),
+      ),
+    );
   }
 
   Widget buildLoginButton() {
     return Container(
       width: 200,
-      height: 100,
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 14),
       child: ElevatedButton(
-        onPressed: isLogin
-            ? signInWithEmailAndPassword
-            : createUserWithEmailAndPassword,
-        child: Text(isLogin ? 'Log in' : 'Sign Up'),
+        onPressed: isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
+        child: Text(
+          isLogin ? 'Log in' : 'Sign Up',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
+
   Widget buildForgotPasswordButton() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    child: TextButton(
+    return TextButton(
       onPressed: () {
         // Navigate to the forgot password page
         Navigator.push(
@@ -131,25 +140,28 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
         );
       },
-      child: Text('Forgot password?'),
-    ),
-  );
-}
+      child: Text(
+        'Forgot password?',
+        style: TextStyle(fontSize: 16),
+      ),
+    );
+  }
 
   Widget buildSignUporLoginButton(BuildContext context) {
-    return Container(
-      width: 250,
-      height: 100,
-      padding: const EdgeInsets.symmetric(vertical: 12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextButton(
         onPressed: () {
-          setState(() {
-            isLogin = !isLogin;
-          });
+          // Navigate to the sign-up screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SignupScreen()),
+          );
         },
-        child: Text(isLogin
-            ? 'Don\'t have an account? Sign up'
-            : 'Already have an account? Login'),
+        child: Text(
+          isLogin ? 'Don\'t have an account? Sign up' : '',
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
@@ -161,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           buildWelcomeText(),
           buildEntryField('Email', _controllerEmail),
-          buildEntryField('Password', _controllerPassword),
+          buildPasswordField(),
           buildErrorMessage(),
           buildLoginButton(),
           buildSignUporLoginButton(context),

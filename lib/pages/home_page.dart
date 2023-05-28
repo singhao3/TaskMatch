@@ -23,13 +23,6 @@ class _HomePageState extends State<HomePage> {
     await Auth().signOut();
   }
 
-  Widget _signOutButton() {
-    return ElevatedButton(
-      onPressed: signOut,
-      child: const Text('Sign Out'),
-    );
-  }
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 2;
 
@@ -75,6 +68,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(Auth().currentUser);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
