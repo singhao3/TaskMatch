@@ -1,33 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:taskmatch/NavPages/discorver.dart';
 import 'package:taskmatch/NavPages/history.dart';
-import 'package:taskmatch/NavPages/home.dart';
+import 'package:taskmatch/pages/taskseeker/taskseeker_home.dart';
 import 'package:taskmatch/NavPages/message.dart';
 import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
-import 'tagline_banner.dart';
+import '../tagline_banner.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class TaskSeekerHome extends StatefulWidget {
+  const TaskSeekerHome({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _HomePageState createState() => _HomePageState();
+  _TaskSeekerHomeState createState() => _TaskSeekerHomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TaskSeekerHomeState extends State<TaskSeekerHome> {
   final User? user = Auth().currentUser;
 
   Future<void> signOut() async {
     await Auth().signOut();
-  }
-
-  Widget _signOutButton() {
-    return ElevatedButton(
-      onPressed: signOut,
-      child: const Text('Sign Out'),
-    );
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -183,71 +176,40 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.search),
-      //       label: 'Search',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.history),
-      //       label: 'History',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: CircleAvatar(
-      //         backgroundColor: Colors.green,
-      //         child: Icon(Icons.home),
-      //       ),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.message),
-      //       label: 'Messages',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Profile',
-      //     ),
-      //   ],
-      //   currentIndex: _selectedIndex,
-      //   selectedItemColor: Colors.green,
-      //   unselectedItemColor: Colors.black,
-      //   onTap: _onItemTapped,
-      // ),
       bottomNavigationBar: BottomNavigationBar(
-  items: const <BottomNavigationBarItem>[
-    BottomNavigationBarItem(
-      icon: Icon(Icons.search),
-      label: 'Search',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.history),
-      label: 'History',
-    ),
-    BottomNavigationBarItem(
-      icon: CircleAvatar(
-        backgroundColor: Colors.green,
-        child: Icon(Icons.home),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: Colors.green,
+              child: Icon(Icons.home),
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Messages',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.black,
+        onTap: _onItemTapped,
+        backgroundColor: Colors.white,
+        elevation: 8,
+        type: BottomNavigationBarType.fixed,
       ),
-      label: 'Home',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.message),
-      label: 'Messages',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.person),
-      label: 'Profile',
-    ),
-  ],
-  currentIndex: _selectedIndex,
-  selectedItemColor: Colors.green,
-  unselectedItemColor: Colors.black,
-  onTap: _onItemTapped,
-  backgroundColor: Colors.white,
-  elevation: 8,
-  type: BottomNavigationBarType.fixed,
-),
     );
   }
 }

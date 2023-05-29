@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../util/homegrid.dart';
+import 'package:taskmatch/util/homegrid_taskseeker.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 class Home extends StatelessWidget {
@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 40.0),
+              const SizedBox(height: 40.0),
               TypewriterAnimatedTextKit( 
                 text: ['Welcome to TaskMatch'],
                 textStyle: TextStyle(
