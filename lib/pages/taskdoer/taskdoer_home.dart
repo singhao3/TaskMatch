@@ -1,7 +1,6 @@
 //taskdoer_home.dart
 import 'package:flutter/material.dart';
 import 'package:taskmatch/util/homegrid_taskdoer.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});
@@ -25,20 +24,33 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 5.0), 
               Center(
-                child: Text(
-                  'Explore Your Tasks', 
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Pacifico',
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'images/app_icon.png', 
+                          height: 100.0,
+                        ),
+                        SizedBox(width: 10.0),
+                        Text(
+                          'Explore Your Tasks',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Pacifico',
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 20.0), 
+              SizedBox(height: 20.0),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
