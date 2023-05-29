@@ -7,6 +7,7 @@ import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
 import '../tagline_banner.dart';
+import '../notification.dart';
 
 class TaskSeekerHome extends StatefulWidget {
   const TaskSeekerHome({Key? key}) : super(key: key);
@@ -86,7 +87,12 @@ class _TaskSeekerHomeState extends State<TaskSeekerHome> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Handle notifications
+              Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => NotificationPage(),
+    ),
+  );
             },
           ),
         ],
