@@ -8,7 +8,7 @@ class discover extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       
-      body: discovergrid(),
+      body: DiscoverGrid(),
     );
   }
 }
