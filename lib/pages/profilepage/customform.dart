@@ -1,149 +1,9 @@
 
 
-// import 'package:flutter/material.dart';
-
-// class MyCustomForm extends StatefulWidget {
-//   const MyCustomForm({Key? key}) : super(key: key);
-
-//   @override
-//   MyCustomFormState createState() => MyCustomFormState();
-// }
-
-// class MyCustomFormState extends State<MyCustomForm> {
-//   final _formKey = GlobalKey<FormState>();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Form(
-//       key: _formKey,
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: <Widget>[
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.android, color: Colors.white),
-//               hintText: 'Enter your user ID',
-//               labelText: 'UserID',
-//               labelStyle: TextStyle(color: Colors.white),
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.white),
-//           ),
-//           SizedBox(height: 16),
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.person, color: Colors.white),
-//               hintText: 'Enter your name',
-//               labelText: 'Name',
-//               labelStyle: TextStyle(color: Colors.white),
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.white),
-//           ),
-//           SizedBox(height: 16),
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.email, color: Colors.white),
-//               hintText: 'Enter your email address',
-//               labelText: 'Email Address',
-//               labelStyle: TextStyle(color: Colors.white),
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.white),
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.white),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-
-// class MyCustomForm extends StatefulWidget {
-//   const MyCustomForm({Key? key}) : super(key: key);
-
-//   @override
-//   MyCustomFormState createState() => MyCustomFormState();
-// }
-
-// class MyCustomFormState extends State<MyCustomForm> {
-//   final _formKey = GlobalKey<FormState>();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Form(
-//       key: _formKey,
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: <Widget>[
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.android, color: Colors.green), // Set the icon color to green
-//               hintText: 'Enter your user ID',
-//               labelText: 'UserID',
-//               labelStyle: TextStyle(color: Colors.green), // Set the label text color to green
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green), // Set the underline color to green
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green), // Set the focused underline color to green
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.green), // Set the text color to green
-//           ),
-//           SizedBox(height: 16),
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.person, color: Colors.green),
-//               hintText: 'Enter your name',
-//               labelText: 'Name',
-//               labelStyle: TextStyle(color: Colors.green),
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green),
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green),
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.green),
-//           ),
-//           SizedBox(height: 16),
-//           TextFormField(
-//             decoration: InputDecoration(
-//               icon: Icon(Icons.email, color: Colors.green),
-//               hintText: 'Enter your email address',
-//               labelText: 'Email Address',
-//               labelStyle: TextStyle(color: Colors.green),
-//               enabledBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green),
-//               ),
-//               focusedBorder: UnderlineInputBorder(
-//                 borderSide: BorderSide(color: Colors.green),
-//               ),
-//             ),
-//             style: TextStyle(color: Colors.green),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:taskmatch/auth.dart';
 
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key}) : super(key: key);
@@ -152,38 +12,51 @@ class MyCustomForm extends StatefulWidget {
   MyCustomFormState createState() => MyCustomFormState();
 }
 
+
+
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
+  String? username;
+  User? user=Auth().currentUser;
+  
+  
+
+  @override
+  void initState() {
+    super.initState();
+    // Call a function to fetch the user ID and email from Firebase
+    fetchUserData();
+  }
+
+   Future<void> fetchUserData() async {
+    final uid = user?.uid;
+    if (uid != null) {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('task_doers').doc(uid).get();
+      final data = snapshot.data();
+      if (data != null) {
+        setState(() {
+          username = data['name'] ?? ''; // Update the username state variable
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Container( // Wrap the form in a container with white background color
-      color: Colors.white, // Set the background color to white
+    return Container(
+      color: Colors.white,
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(
-                icon: Icon(Icons.android, color: Colors.green),
-                hintText: 'Enter your user ID',
-                labelText: 'UserID',
-                labelStyle: TextStyle(color: Colors.green),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                ),
-              ),
-              style: TextStyle(color: Colors.green),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
+                        TextFormField(
+              initialValue: username,
+              readOnly: true, // Make the field read-only
               decoration: InputDecoration(
                 icon: Icon(Icons.person, color: Colors.green),
-                hintText: 'Enter your name',
                 labelText: 'Name',
                 labelStyle: TextStyle(color: Colors.green),
                 enabledBorder: UnderlineInputBorder(
@@ -197,9 +70,10 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
             SizedBox(height: 16),
             TextFormField(
+              initialValue: user?.email, // Display the email from Firebase
+              readOnly: true, // Make the field read-only
               decoration: InputDecoration(
                 icon: Icon(Icons.email, color: Colors.green),
-                hintText: 'Enter your email address',
                 labelText: 'Email Address',
                 labelStyle: TextStyle(color: Colors.green),
                 enabledBorder: UnderlineInputBorder(
@@ -211,9 +85,11 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
               style: TextStyle(color: Colors.green),
             ),
+
           ],
         ),
       ),
     );
   }
 }
+
