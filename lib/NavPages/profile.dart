@@ -7,23 +7,6 @@ class profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-
-      // appBar: AppBar(
-      //   title: Text(
-      //     'Task Seeker',
-      //     textAlign: TextAlign.right,
-      //   ),
-      //   automaticallyImplyLeading: false,
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.settings),
-      //       onPressed: () {
-      //         // TODO: Implement settings action
-      //       },
-      //     ),
-      //   ],
-      // ),
       body: RootPage(),
     );
   }
