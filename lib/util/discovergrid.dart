@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class discovergrid extends StatelessWidget {
-  const discovergrid({Key? key});
+class DiscoverGrid extends StatelessWidget {
+  final List<QueryDocumentSnapshot> documents;
+
+  const DiscoverGrid({Key? key, required this.documents}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: documents.length,
       itemBuilder: (context, index) {
+        final document = documents[index];
+        final title = document['title'] ?? '';
+        final description = document['description'] ?? '';
+        final budget = document['budget'] ?? '';
+
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(
@@ -21,31 +29,24 @@ class discovergrid extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Project Name $index',
-                          style: TextStyle(
+                          title,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Description $index',
-                          style: TextStyle(fontSize: 14),
+                          description,
+                          style: const TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          'UNiversity name $index',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
                       ],
                     ),
                   ),
                   Text(
-                    '\$10.00',
-                    style: TextStyle(
+                    '\$$budget',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                       color: Colors.green,
