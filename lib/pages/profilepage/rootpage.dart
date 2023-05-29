@@ -27,7 +27,7 @@ class RootPage extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Profile',
+                  '    Profile',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -41,7 +41,7 @@ class RootPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
-                        color: Colors.white,
+                        color: Colors.green,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
