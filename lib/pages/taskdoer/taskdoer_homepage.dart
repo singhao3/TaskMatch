@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:taskmatch/NavPages/discorver.dart';
+import 'package:taskmatch/NavPages/discover.dart';
 import 'package:taskmatch/NavPages/history.dart';
 import 'package:taskmatch/pages/taskdoer/taskdoer_home.dart';
 import 'package:taskmatch/NavPages/message.dart';
@@ -48,7 +48,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
   int _selectedIndex = 2;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    discover(),
+    Discover(),
     history(),
     Home(),
     message(),

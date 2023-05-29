@@ -1,33 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:taskmatch/NavPages/discorver.dart';
+import 'package:taskmatch/NavPages/discover.dart';
 import 'package:taskmatch/NavPages/history.dart';
 import 'package:taskmatch/pages/taskseeker/taskseeker_home.dart';
 import 'package:taskmatch/NavPages/message.dart';
 import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
-import '../tagline_banner.dart';
+import 'package:taskmatch/pages/tagline_banner.dart';
 
-class TaskSeekerHome extends StatefulWidget {
-  const TaskSeekerHome({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _TaskSeekerHomeState createState() => _TaskSeekerHomeState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _TaskSeekerHomeState extends State<TaskSeekerHome> {
+class _HomePageState extends State<HomePage> {
   final User? user = Auth().currentUser;
 
   Future<void> signOut() async {
     await Auth().signOut();
   }
 
+  Widget _signOutButton() {
+    return ElevatedButton(
+      onPressed: signOut,
+      child: const Text('Sign Out'),
+    );
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 2;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    discover(),
+    Discover(),
     history(),
     Home(),
     message(),

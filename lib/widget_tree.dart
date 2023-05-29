@@ -37,7 +37,7 @@ class _WidgetTreeState extends State<WidgetTree> {
                   return const TaskDoerHome();
                 } else {
                   // User is not a task-doer, navigate to task-seeker home page
-                  return const TaskSeekerHome();
+                  return const HomePage();
                 }
               },
             );
