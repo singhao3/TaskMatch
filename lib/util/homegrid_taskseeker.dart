@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskmatch/pages/task_seeker_post.dart';
+import 'package:taskmatch/pages/taskseeker/task_seeker_post.dart';
 
 class HomeGrid extends StatelessWidget {
   @override

@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taskmatch/auth.dart';
-import 'package:taskmatch/pages/home_page.dart';
+import 'package:taskmatch/pages/taskseeker/taskseeker_homepage.dart';
+import 'package:taskmatch/pages/taskdoer/taskdoer_homepage.dart';
 import 'package:taskmatch/pages/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -33,10 +34,10 @@ class _WidgetTreeState extends State<WidgetTree> {
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data!.exists) {
                   // User is a task-doer, navigate to task-doer home page
-                  return const HomePage();
+                  return const TaskDoerHome();
                 } else {
                   // User is not a task-doer, navigate to task-seeker home page
-                  return const HomePage();
+                  return const TaskSeekerHome();
                 }
               },
             );

@@ -1,6 +1,6 @@
+//taskdoer_home.dart
 import 'package:flutter/material.dart';
-import '../util/homegrid.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:taskmatch/util/homegrid_taskdoer.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});
@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.lightGreen[200]!,
+              Colors.lightGreen[400]!,
               Colors.white,
             ],
             begin: Alignment.topCenter,
@@ -24,19 +24,33 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 40.0),
-              TypewriterAnimatedTextKit( 
-                text: ['Welcome to TaskMatch'],
-                textStyle: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Pacifico', 
-                  color: Colors.black,
+              Center(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'images/app_icon.png', 
+                          height: 100.0,
+                        ),
+                        SizedBox(width: 10.0),
+                        Text(
+                          'Explore Your Tasks',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Pacifico',
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
-                speed: Duration(milliseconds: 200),
               ),
-              SizedBox(height: 48.0),
+              SizedBox(height: 20.0),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -52,8 +66,8 @@ class Home extends StatelessWidget {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: HomeGrid(),
+                    padding: const EdgeInsets.all(12.0), // Decreased padding
+                    child: Discovergrid(),
                   ),
                 ),
               ),
