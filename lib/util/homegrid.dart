@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskmatch/pages/task_seeker_post.dart';
+import 'package:taskmatch/pages/my_tasks_page.dart';
 
 class HomeGrid extends StatelessWidget {
   @override
@@ -9,18 +10,32 @@ class HomeGrid extends StatelessWidget {
       child: Center(
         child: FractionallySizedBox(
           widthFactor: 0.8,
-          child: GridView.count(
-            crossAxisCount: 1,
+          child: ListView(
             padding: const EdgeInsets.all(20.0),
-            childAspectRatio: 1.2,
-            mainAxisSpacing: 20.0,
-            crossAxisSpacing: 20.0,
             children: [
-              _buildIconBox(
-                context,
-                Icons.add,
-                'Post a Task',
-                Colors.green[400]!,
+              GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: 1.2,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  _buildIconBox(
+                    context,
+                    Icons.add,
+                    'Post a Task',
+                    Colors.green[400]!,
+                    TaskSeekerInterface(),
+                  ),
+                  _buildIconBox(
+                    context,
+                    Icons.edit,
+                    'Update Task Post',
+                    Colors.blue[400]!,
+                    MyTasksPage(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -30,17 +45,13 @@ class HomeGrid extends StatelessWidget {
   }
 }
 
-Widget _buildIconBox(BuildContext context, IconData icon, String text, Color color) {
+Widget _buildIconBox(BuildContext context, IconData icon, String text, Color color, Widget destination) {
   return GestureDetector(
     onTap: () {
-      if (text == 'Post a Task') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TaskSeekerInterface()),
-        );
-      } else {
-        // Handle other icon box tap
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => destination),
+      );
     },
     child: Container(
       decoration: BoxDecoration(

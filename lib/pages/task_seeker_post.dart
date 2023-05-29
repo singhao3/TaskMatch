@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
 class TaskSeekerInterface extends StatefulWidget {
@@ -44,7 +45,10 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
       }
 
       // Create a task document in Firestore
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final userId = currentUser?.uid;
       await FirebaseFirestore.instance.collection('tasks').add({
+        'userId': userId,
         'title': _taskTitleController.text.trim(),
         'description': _taskDescriptionController.text.trim(),
         'budget': double.parse(_taskBudgetController.text.trim()),
