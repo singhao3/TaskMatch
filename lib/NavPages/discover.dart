@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taskmatch/util/discovergrid.dart';
-import 'package:rxdart/rxdart.dart';
-
 
 class Discover extends StatefulWidget {
   const Discover({Key? key}) : super(key: key);
@@ -11,17 +9,23 @@ class Discover extends StatefulWidget {
   _DiscoverState createState() => _DiscoverState();
 }
 
+enum SearchOption {
+  Title,
+  Description,
+}
+
 class _DiscoverState extends State<Discover> {
   late TextEditingController _searchController;
+  late SearchOption _searchOption;
   late Stream<QuerySnapshot> _searchResultsStream;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    _searchResultsStream = FirebaseFirestore.instance
-        .collection('tasks')
-        .snapshots();
+    _searchOption = SearchOption.Title; // Default search option
+    _searchResultsStream =
+        FirebaseFirestore.instance.collection('tasks').snapshots();
   }
 
   @override
@@ -31,32 +35,38 @@ class _DiscoverState extends State<Discover> {
   }
 
   void _startSearch() {
-  String searchTerm = _searchController.text.trim();
-  if (searchTerm.isNotEmpty) {
-    setState(() {
-      String searchTermEnd = searchTerm + 'z';
+    String searchTerm = _searchController.text.trim();
+    if (searchTerm.isNotEmpty) {
+      // Perform the search
+      setState(() {
+        String searchTermEnd = searchTerm + 'z';
 
-      // Query for 'title' field
-      var titleQuery = FirebaseFirestore.instance
-          .collection('tasks')
-          .where('title', isGreaterThanOrEqualTo: searchTerm)
-          .where('title', isLessThan: searchTermEnd)
-          .snapshots();
-
-      // Query for 'description' field
-      var descriptionQuery = FirebaseFirestore.instance
-          .collection('tasks')
-          .where('description', isGreaterThanOrEqualTo: searchTerm)
-          .where('description', isLessThan: searchTermEnd)
-          .snapshots();
-
-      // Merge the results of both queries
-      _searchResultsStream = Rx.merge([titleQuery, descriptionQuery]);
-    });
+        // Perform search based on the selected option
+        switch (_searchOption) {
+          case SearchOption.Title:
+            _searchResultsStream = FirebaseFirestore.instance
+                .collection('tasks')
+                .where('title', isGreaterThanOrEqualTo: searchTerm.toLowerCase())
+                .where('title', isLessThanOrEqualTo: searchTermEnd.toLowerCase())
+                .snapshots();
+            break;
+          case SearchOption.Description:
+            _searchResultsStream = FirebaseFirestore.instance
+                .collection('tasks')
+                .where('description', isGreaterThanOrEqualTo: searchTerm.toLowerCase())
+                .where('description', isLessThanOrEqualTo: searchTermEnd.toLowerCase())
+                .snapshots();
+            break;
+        }
+      });
+    } else {
+      // Reset the search results stream to the default query
+      setState(() {
+        _searchResultsStream =
+            FirebaseFirestore.instance.collection('tasks').snapshots();
+      });
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,15 +75,39 @@ class _DiscoverState extends State<Discover> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                suffixIcon: IconButton(
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                    ),
+                  ),
+                ),
+                IconButton(
                   icon: Icon(Icons.search),
                   onPressed: _startSearch,
                 ),
-              ),
+                DropdownButton<SearchOption>(
+                  value: _searchOption,
+                  onChanged: (SearchOption? newValue) {
+                    setState(() {
+                      _searchOption = newValue!;
+                    });
+                  },
+                  items: [
+                    DropdownMenuItem<SearchOption>(
+                      value: SearchOption.Title,
+                      child: Text('Search Title'),
+                    ),
+                    DropdownMenuItem<SearchOption>(
+                      value: SearchOption.Description,
+                      child: Text('Search Description'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -103,3 +137,4 @@ class _DiscoverState extends State<Discover> {
     );
   }
 }
+
