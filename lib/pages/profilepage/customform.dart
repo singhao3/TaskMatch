@@ -13,12 +13,13 @@ class MyCustomForm extends StatefulWidget {
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   String? username;
-  User? user;
+  String? phoneNumber;
+  User? user = Auth().currentUser;
 
   @override
   void initState() {
     super.initState();
-    user = Auth().currentUser;
+    // Call a function to fetch the user ID and email from Firebase
     fetchUserData();
   }
 
@@ -26,11 +27,12 @@ class MyCustomFormState extends State<MyCustomForm> {
     final uid = user?.uid;
     if (uid != null) {
       final snapshot =
-          await FirebaseFirestore.instance.collection('task_seekers').doc(uid).get();
+          await FirebaseFirestore.instance.collection('task_doers').doc(uid).get();
       final data = snapshot.data();
       if (data != null) {
         setState(() {
-          username = data['name'] ?? ''; 
+          username = data['name'] ?? ''; // Update the username state variable
+          phoneNumber = data['phone_number'] ?? ''; // Update the phoneNumber state variable
         });
       }
     }
@@ -47,7 +49,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           children: <Widget>[
             TextFormField(
               initialValue: username,
-              readOnly: true, // Make the field read-only
+              readOnly: false, // Make the field read-only
               decoration: InputDecoration(
                 icon: Icon(Icons.person, color: Colors.green),
                 labelText: 'Name',
@@ -64,10 +66,27 @@ class MyCustomFormState extends State<MyCustomForm> {
             SizedBox(height: 16),
             TextFormField(
               initialValue: user?.email, // Display the email from Firebase
-              readOnly: true, // Make the field read-only
+              readOnly: false, // Make the field read-only
               decoration: InputDecoration(
                 icon: Icon(Icons.email, color: Colors.green),
                 labelText: 'Email Address',
+                labelStyle: TextStyle(color: Colors.green),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+              ),
+              style: TextStyle(color: Colors.green),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              initialValue: phoneNumber,
+              readOnly: false, // Make the field read-only
+              decoration: InputDecoration(
+                icon: Icon(Icons.phone, color: Colors.green),
+                labelText: 'Phone Number',
                 labelStyle: TextStyle(color: Colors.green),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
