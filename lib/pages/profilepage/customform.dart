@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,36 +10,31 @@ class MyCustomForm extends StatefulWidget {
   MyCustomFormState createState() => MyCustomFormState();
 }
 
-
-
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   String? username;
-  User? user=Auth().currentUser;
-  
-  
+  User? user;
 
   @override
   void initState() {
     super.initState();
-    // Call a function to fetch the user ID and email from Firebase
+    user = Auth().currentUser;
     fetchUserData();
   }
 
-   Future<void> fetchUserData() async {
+  Future<void> fetchUserData() async {
     final uid = user?.uid;
     if (uid != null) {
       final snapshot =
-          await FirebaseFirestore.instance.collection('task_doers').doc(uid).get();
+          await FirebaseFirestore.instance.collection('task_seekers').doc(uid).get();
       final data = snapshot.data();
       if (data != null) {
         setState(() {
-          username = data['name'] ?? ''; // Update the username state variable
+          username = data['name'] ?? ''; 
         });
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +45,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-                        TextFormField(
+            TextFormField(
               initialValue: username,
               readOnly: true, // Make the field read-only
               decoration: InputDecoration(
@@ -85,11 +78,9 @@ class MyCustomFormState extends State<MyCustomForm> {
               ),
               style: TextStyle(color: Colors.green),
             ),
-
           ],
         ),
       ),
     );
   }
 }
-

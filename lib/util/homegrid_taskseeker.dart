@@ -5,42 +5,32 @@ import 'package:taskmatch/pages/my_tasks_page.dart';
 class HomeGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      child: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.8,
-          child: ListView(
-            padding: const EdgeInsets.all(20.0),
-            children: [
-              GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 1.2,
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 20.0,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  _buildIconBox(
-                    context,
-                    Icons.add,
-                    'Post a Task',
-                    Colors.green[400]!,
-                    TaskSeekerInterface(),
-                  ),
-                  _buildIconBox(
-                    context,
-                    Icons.edit,
-                    'Update Task Post',
-                    Colors.blue[400]!,
-                    MyTasksPage(),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 20.0,
+      crossAxisSpacing: 20.0,
+      padding: const EdgeInsets.all(20.0),
+      children: [
+        _buildIconBox(
+          context,
+          Icons.add,
+          'Post a Task',
+          Colors.green[400]!,
+          TaskSeekerInterface(),
         ),
-      ),
+        _buildIconBox(
+          context,
+          Icons.edit,
+          'Update\nTask Post',
+          Colors.blue[400]!,
+          MyTasksPage(),
+        ),
+      ].map((child) {
+        return AspectRatio(
+          aspectRatio: 1.2,
+          child: child,
+        );
+      }).toList(),
     );
   }
 }
@@ -71,12 +61,15 @@ Widget _buildIconBox(BuildContext context, IconData icon, String text, Color col
         children: [
           Icon(icon, size: 64, color: Colors.white),
           SizedBox(height: 16),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -84,3 +77,4 @@ Widget _buildIconBox(BuildContext context, IconData icon, String text, Color col
     ),
   );
 }
+

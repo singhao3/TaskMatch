@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taskmatch/NavPages/discover.dart';
 import 'package:taskmatch/NavPages/history.dart';
 import 'package:taskmatch/pages/taskseeker/taskseeker_home.dart';
@@ -19,16 +20,32 @@ class TaskSeekerHome extends StatefulWidget {
 
 class _HomePageState extends State<TaskSeekerHome> {
   final User? user = Auth().currentUser;
+  String? username;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsername(); 
+  }
+
+  Future<void> fetchUsername() async {
+    final uid = user?.uid;
+    if (uid != null) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('task_seekers')
+          .doc(uid)
+          .get();
+      final data = snapshot.data();
+      if (data != null) {
+        setState(() {
+          username = data['name'] ?? '';
+        });
+      }
+    }
+  }
 
   Future<void> signOut() async {
     await Auth().signOut();
-  }
-
-  Widget _signOutButton() {
-    return ElevatedButton(
-      onPressed: signOut,
-      child: const Text('Sign Out'),
-    );
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -46,26 +63,6 @@ class _HomePageState extends State<TaskSeekerHome> {
     setState(() {
       _selectedIndex = index;
     });
-
-    if (_selectedIndex == 1) {
-      _buildSearchBar();
-    }
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-        ),
-      ),
-    );
   }
 
   @override
@@ -95,11 +92,12 @@ class _HomePageState extends State<TaskSeekerHome> {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => NotificationPage(), // Navigate to the NotificationPage
-    ),
-  );
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      NotificationPage(), // Navigate to the NotificationPage
+                ),
+              );
             },
           ),
         ],
@@ -112,7 +110,9 @@ class _HomePageState extends State<TaskSeekerHome> {
                 padding: EdgeInsets.zero,
                 children: [
                   UserAccountsDrawerHeader(
-                    accountName: const Text('John Doe'),
+                    accountName: username != null
+                        ? Text(username!) 
+                        : const Text('Loading...'),
                     accountEmail: Text(user?.email ?? 'User email'),
                     currentAccountPicture: const CircleAvatar(
                       backgroundImage: AssetImage('images/user.png'),
@@ -174,7 +174,6 @@ class _HomePageState extends State<TaskSeekerHome> {
       ),
       body: Column(
         children: [
-          _selectedIndex == 0 ? _buildSearchBar() : const SizedBox.shrink(),
           Expanded(
             child: _selectedIndex == 2
                 ? Column(
