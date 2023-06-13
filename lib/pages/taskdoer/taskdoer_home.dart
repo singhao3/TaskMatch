@@ -1,6 +1,6 @@
-//taskdoer_home.dart
 import 'package:flutter/material.dart';
 import 'package:taskmatch/util/homegrid_taskdoer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import the necessary package
 
 class Home extends StatelessWidget {
   const Home({Key? key});
@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          'images/app_icon.png', 
+                          'images/app_icon.png',
                           height: 100.0,
                         ),
                         SizedBox(width: 10.0),
@@ -66,8 +66,32 @@ class Home extends StatelessWidget {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(12.0), // Decreased padding
-                    child: Discovergrid(),
+                    padding: EdgeInsets.all(12.0), // Decreased padding
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('tasks')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text('Error');
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        return ListView.builder(
+                          itemCount: snapshot.data?.docs.length,
+                          itemBuilder: (context, index) {
+                            QueryDocumentSnapshot<Object?> document = snapshot
+                                .data
+                                ?.docs[index] as QueryDocumentSnapshot<Object?>;
+                            return Discoverers(document: document);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
