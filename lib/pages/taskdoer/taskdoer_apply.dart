@@ -7,6 +7,19 @@ class taskdoerApply extends StatefulWidget {
 }
 
 class _taskdoerApplyState extends State<taskdoerApply> {
+	List<String> docsId =[];
+	
+	Future getTask() async {
+		await FirebaseFirestore.instance.collection('tasks').get().then(
+			(snapshot) => snapshot.data.forEach(
+				(task) {
+					print(task.reference);
+					docsId.add(task.reference.id);
+				},
+			),
+		);
+		
+	}
 	
 	@override
 	Widget build(BuildContext context) {
@@ -29,7 +42,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 					child: Column(
 						crossAxisAlignment: CrossAxisAlignment.stretch,
 						children: [
-							Row(
+							ListTile(
 								mainAxisAlignment: MainAxisAlignment.center,
 								children: [
 									Image.asset(
@@ -38,7 +51,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 									),
 									SizedBox(height: 10),
 									Text(
-										'Task Title',
+										'Title: $data['title']',
 										style: TextStyle(
 											fontSize: 16,
 											fontWeight: FontWeight.bold,
@@ -54,22 +67,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 									),
 									SizedBox(width: 4),
 									Text(
-										'Some description',
-										style: TextStyle(
-											fontSize: 12,
-										),
-									),
-									SizedBox(height: 12),
-									Text(
-										'Date: ',
-										style: TextStyle(
-											fontSize: 16,
-											fontWeight: FontWeight.bold,
-										),
-									),
-									SizedBox(width: 4),
-									Text(
-										'Some Date',
+										'$data['description']',
 										style: TextStyle(
 											fontSize: 12,
 										),
@@ -84,7 +82,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 									),
 									SizedBox(width: 4),
 									Text(
-										'Some Time',
+										'$data['time']',
 										style: TextStyle(
 											fontSize: 12,
 										),
@@ -99,7 +97,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 									),
 									SizedBox(width: 4),
 									Text(
-										'Some Location',
+										'$data['location']',
 										style: TextStyle(
 											fontSize: 12,
 										),
@@ -114,7 +112,7 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 									),
 									SizedBox(width: 4),
 									Text(
-										'Some Reward',
+										'$data['budget']',
 										style: TextStyle(
 											fontSize: 12,
 										),
@@ -154,3 +152,5 @@ class _taskdoerApplyState extends State<taskdoerApply> {
 		)
 	}
 }
+						
+							
