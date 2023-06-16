@@ -67,6 +67,32 @@ class TaskListScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 24),
+									ElevatedButton(
+              						onPressed: () {},
+              						style: ElevatedButton.styleFrom(
+                						backgroundColor: Colors.white,
+              						),
+              						child: Text(
+                						'Chat Now',
+                						style: TextStyle(
+                  						color: Colors.black,
+                						),
+              						),
+            					),
+									SizedBox(width: 8),
+									ElevatedButton(
+              						onPressed: () {},
+              						style: ElevatedButton.styleFrom(
+                						backgroundColor: Colors.white,
+              						),
+              						child: Text(
+                						'Apply Now',
+                						style: TextStyle(
+                  						color: Colors.black,
+                						),
+              						),
+            					),
           ],
         ),
       ),
