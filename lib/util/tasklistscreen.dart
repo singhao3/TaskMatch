@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TaskListScreen extends StatelessWidget {
   final QueryDocumentSnapshot document;
@@ -68,34 +69,64 @@ class TaskListScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 24),
-									ElevatedButton(
-              						onPressed: () {},
-              						style: ElevatedButton.styleFrom(
-                						backgroundColor: Colors.white,
-              						),
-              						child: Text(
-                						'Chat Now',
-                						style: TextStyle(
-                  						color: Colors.black,
-                						),
-              						),
-            					),
-									SizedBox(width: 8),
-									ElevatedButton(
-              						onPressed: () {},
-              						style: ElevatedButton.styleFrom(
-                						backgroundColor: Colors.white,
-              						),
-              						child: Text(
-                						'Apply Now',
-                						style: TextStyle(
-                  						color: Colors.black,
-                						),
-              						),
-            					),
+            ElevatedButton(
+              onPressed: () {
+                _showApplyConfirmationDialog(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              child: Text(
+                'Apply Now',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _showApplyConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Apply for Task'),
+          content: Text('Are you sure you want to apply for this task?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _applyForTask();
+                Navigator.of(context).pop();
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _applyForTask() {
+    // Retrieve the current user's ID
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final taskDoerId = user.uid; // Use the user's ID as the task doer's ID
+      final taskId = document.id; // Assuming the document ID is the task ID
+
+      FirebaseFirestore.instance
+          .collection('tasks')
+          .doc(taskId)
+          .update({'applicants': FieldValue.arrayUnion([taskDoerId])});
+    }
   }
 }
