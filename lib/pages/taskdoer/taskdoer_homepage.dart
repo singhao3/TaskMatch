@@ -23,7 +23,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
   @override
   void initState() {
     super.initState();
-    fetchUsername(); // Fetch the username when the widget initializes
+    fetchUsername(); 
   }
 
   Future<void> fetchUsername() async {
@@ -34,7 +34,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
       final data = snapshot.data();
       if (data != null) {
         setState(() {
-          username = data['name'] ?? ''; // Update the username state variable
+          username = data['name'] ?? ''; 
         });
       }
     }
@@ -104,8 +104,8 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
                 children: [
                   UserAccountsDrawerHeader(
                     accountName: username != null
-                        ? Text(username!) // Use the Firestore-stored username
-                        : const Text('Loading...'), // Placeholder while loading
+                        ? Text(username!) 
+                        : const Text('Loading...'), 
                     accountEmail: Text(user?.email ?? 'User email'),
                     currentAccountPicture: const CircleAvatar(
                       backgroundImage: AssetImage('images/user.png'),
