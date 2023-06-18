@@ -3,7 +3,7 @@ import 'package:taskmatch/util/tasklistscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Discoverers extends StatelessWidget {
-  Discoverers({Key? key, required this.document}) : super(key: key);
+  const Discoverers({Key? key, required this.document}) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> document;
 
@@ -52,7 +52,7 @@ class Discoverers extends StatelessWidget {
                 ),
                 Text(
                   '\$$budget',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                     color: Colors.green,

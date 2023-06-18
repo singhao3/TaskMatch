@@ -12,7 +12,6 @@ class TaskDoerHome extends StatefulWidget {
   const TaskDoerHome({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _TaskDoerHomeState createState() => _TaskDoerHomeState();
 }
 
@@ -23,7 +22,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
   @override
   void initState() {
     super.initState();
-    fetchUsername(); 
+    fetchUsername();
   }
 
   Future<void> fetchUsername() async {
@@ -34,7 +33,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
       final data = snapshot.data();
       if (data != null) {
         setState(() {
-          username = data['name'] ?? ''; 
+          username = data['name'] ?? '';
         });
       }
     }
@@ -59,10 +58,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
     setState(() {
       _selectedIndex = index;
     });
-
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +89,12 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
               // Handle notifications
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              _showWishlistTasks();
+            },
+          ),
         ],
       ),
       drawer: Drawer(
@@ -103,9 +105,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
                 padding: EdgeInsets.zero,
                 children: [
                   UserAccountsDrawerHeader(
-                    accountName: username != null
-                        ? Text(username!) 
-                        : const Text('Loading...'), 
+                    accountName: username != null ? Text(username!) : const Text('Loading...'),
                     accountEmail: Text(user?.email ?? 'User email'),
                     currentAccountPicture: const CircleAvatar(
                       backgroundImage: AssetImage('images/user.png'),
@@ -171,7 +171,6 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
             child: _selectedIndex == 2
                 ? Column(
                     children: [
-                      
                       Expanded(
                         child: _widgetOptions.elementAt(_selectedIndex),
                       ),
@@ -216,5 +215,67 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
         type: BottomNavigationBarType.fixed,
       ),
     );
+  }
+
+  void _showWishlistTasks() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder<List<dynamic>>(
+          future: fetchWishlistedTasks(),
+          builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const AlertDialog(
+                title: Text('Wishlist'),
+                content: Text('Loading...'),
+              );
+            } else if (snapshot.hasError) {
+              return const AlertDialog(
+                title: Text('Wishlist'),
+                content: Text('Error occurred.'),
+              );
+            } else {
+              final wishlistedTasks = snapshot.data;
+              if (wishlistedTasks == null || wishlistedTasks.isEmpty) {
+                return const AlertDialog(
+                  title: Text('Wishlist'),
+                  content: Text('No wishlisted tasks found.'),
+                );
+              } else {
+                return AlertDialog(
+                  title: const Text('Wishlist'),
+                  content: Column(
+                    children: [
+                      for (final task in wishlistedTasks)
+                        ListTile(
+                          title: Text(task['title']),
+                          subtitle: Text(task['description']),
+                          trailing: Text(
+                            '\$${task['budget']}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Future<List<dynamic>> fetchWishlistedTasks() async {
+    final uid = user?.uid;
+    if (uid != null) {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('task_doers').doc(uid).collection('wishlist').get();
+      final taskIds = snapshot.docs.map((doc) => doc.id).toList();
+      final tasksSnapshot = await FirebaseFirestore.instance.collection('tasks').get();
+      final tasks = tasksSnapshot.docs.where((doc) => taskIds.contains(doc.id)).map((doc) => doc.data()).toList();
+      return tasks;
+    }
+    return [];
   }
 }

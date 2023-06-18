@@ -75,19 +75,6 @@ class _DiscoverGridState extends State<DiscoverGrid> {
                         color: Colors.green,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        favorites[index]
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: favorites[index] ? Colors.red : null,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          favorites[index] = !favorites[index];
-                        });
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -98,24 +85,3 @@ class _DiscoverGridState extends State<DiscoverGrid> {
     );
   }
 }
-
-// class TaskListScreen extends StatelessWidget {
-//   final QueryDocumentSnapshot document;
-
-//   const TaskListScreen({Key? key, required this.document}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // Fetch task list data using the `document` object
-//     // You can use the values from the document to display the task list
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Task List'),
-//       ),
-//       body: Center(
-//         child: Text('Task List for ${document['title']}'),
-//       ),
-//     );
-//   }
-// }

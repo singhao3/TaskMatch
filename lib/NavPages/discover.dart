@@ -6,6 +6,7 @@ class Discover extends StatefulWidget {
   const Discover({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _DiscoverState createState() => _DiscoverState();
 }
 
@@ -80,13 +81,13 @@ class _DiscoverState extends State<Discover> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Search',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: _startSearch,
                 ),
                 DropdownButton<SearchOption>(
@@ -96,7 +97,7 @@ class _DiscoverState extends State<Discover> {
                       _searchOption = newValue!;
                     });
                   },
-                  items: [
+                  items: const [
                     DropdownMenuItem<SearchOption>(
                       value: SearchOption.Title,
                       child: Text('Search Title'),
@@ -119,13 +120,13 @@ class _DiscoverState extends State<Discover> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
 
                 List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
 
                 if (documents.isEmpty) {
-                  return Center(child: Text('No results found'));
+                  return const Center(child: Text('No results found'));
                 }
 
                 return DiscoverGrid(documents: documents);

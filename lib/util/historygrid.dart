@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HistoryGrid extends StatelessWidget {
-  const HistoryGrid({Key? key});
+  const HistoryGrid({super.key, Key? key1});
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +105,16 @@ class HistoryGrid extends StatelessWidget {
   }
 }
 
-
 class TaskDetailsScreen extends StatelessWidget {
   final String taskId;
 
-  const TaskDetailsScreen({Key? key, required this.taskId});
+  const TaskDetailsScreen({super.key, Key? key2, required this.taskId});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final userId = user?.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Details'),
@@ -171,6 +173,8 @@ class TaskDetailsScreen extends StatelessWidget {
               const SnackBar(content: Text('Payment initiated')),
             );
           }
+
+          final isTaskSeeker = userId == task['taskSeekerId'];
 
           return SingleChildScrollView(
             child: Padding(
@@ -254,15 +258,24 @@ class TaskDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  if (status == 'Applied')
+                  if (status == 'Applied' && isTaskSeeker)
                     ElevatedButton(
                       onPressed: () => updateTaskStatus('Completed'),
                       child: const Text('Mark as Completed'),
                     ),
-                  if (status == 'Completed')
+                  if (status == 'Completed' && isTaskSeeker)
                     ElevatedButton(
                       onPressed: () => initiatePayment(),
                       child: const Text('Proceed to Payment'),
+                    ),
+                  if (status == 'Completed' && !isTaskSeeker)
+                    const Text(
+                      'Waiting for Task-Seeker to Pay',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                 ],
               ),
@@ -273,4 +286,3 @@ class TaskDetailsScreen extends StatelessWidget {
     );
   }
 }
-

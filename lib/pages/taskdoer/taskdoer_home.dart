@@ -34,8 +34,8 @@ class Home extends StatelessWidget {
                           'images/app_icon.png',
                           height: 100.0,
                         ),
-                        SizedBox(width: 10.0),
-                        Text(
+                        const SizedBox(width: 10.0),
+                        const Text(
                           'Explore Your Tasks',
                           style: TextStyle(
                             fontSize: 28,
@@ -50,7 +50,7 @@ class Home extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -61,12 +61,12 @@ class Home extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.3),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(12.0), // Decreased padding
+                    padding: const EdgeInsets.all(12.0), 
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('tasks')
