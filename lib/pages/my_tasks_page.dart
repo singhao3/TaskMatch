@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'update_task_page.dart';
 
 class MyTasksPage extends StatefulWidget {
-  const MyTasksPage({Key? key}) : super(key: key); // Add a named 'key' parameter to the constructor
+  const MyTasksPage({Key? key}) : super(key: key); 
 
   @override
   _MyTasksPageState createState() => _MyTasksPageState();
@@ -28,7 +28,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Tasks'), // Added 'const' keyword for compile-time constant
+        title: const Text('My Tasks'), 
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: _tasksStream,
@@ -43,13 +43,12 @@ class _MyTasksPageState extends State<MyTasksPage> {
                 final taskId = task.id;
                 final title = task['title'];
                 final description = task['description'];
-                // Removed the unused 'budget' variable
 
                 return ListTile(
                   title: Text(title),
                   subtitle: Text(description),
                   trailing: IconButton(
-                    icon: const Icon(Icons.edit), // Added 'const' keyword for compile-time constant
+                    icon: const Icon(Icons.edit), 
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -65,7 +64,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return const Center(child: CircularProgressIndicator()); // Added 'const' keyword for compile-time constant
+            return const Center(child: CircularProgressIndicator()); 
           }
         },
       ),

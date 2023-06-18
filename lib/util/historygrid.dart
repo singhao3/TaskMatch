@@ -1,80 +1,131 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HistoryGrid extends StatelessWidget {
-  const HistoryGrid({Key? key});
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final taskSeekerId = user?.uid;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task History'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('tasks')
+            .where('taskSeekerId', isEqualTo: taskSeekerId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final tasks = snapshot.data?.docs ?? [];
+
+          if (tasks.isEmpty) {
+            return Center(
+              child: Text('No tasks posted.'),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index];
+              final title = task['title'] ?? '';
+              final description = task['description'] ?? '';
+              final status = task['status'] ?? 'Not Applied';
+
+              return ListTile(
+                title: Text(title),
+                subtitle: Text(description),
+                trailing: Text(status),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TaskDetailsScreen(taskId: task.id),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class TaskDetailsScreen extends StatelessWidget {
+  final String taskId;
+
+  TaskDetailsScreen({required this.taskId});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          padding: EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task Details'),
+      ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('tasks')
+            .doc(taskId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final task = snapshot.data?.data() as Map<String, dynamic>?;
+
+          if (task == null) {
+            return Center(
+              child: Text('Task not found.'),
+            );
+          }
+
+          final title = task['title'] ?? '';
+          final description = task['description'] ?? '';
+          final budget = task['budget'] ?? '';
+          final image = task['image'] ?? '';
+
+          return Column(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Project Name $index',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Description $index',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Date: May 10, 2023',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
-                ),
+              if (image.isNotEmpty) Image.network(image),
+              SizedBox(height: 16.0),
+              ListTile(
+                title: Text('Title'),
+                subtitle: Text(title),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '\$10.00',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.red,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Paid',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
+              ListTile(
+                title: Text('Description'),
+                subtitle: Text(description),
+              ),
+              ListTile(
+                title: Text('Budget'),
+                subtitle: Text(budget.toString()),
               ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

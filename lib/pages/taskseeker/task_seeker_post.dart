@@ -46,14 +46,15 @@ class _TaskSeekerInterfaceState extends State<TaskSeekerInterface> {
 
       // Create a task document in Firestore
       final currentUser = FirebaseAuth.instance.currentUser;
-      final userId = currentUser?.uid;
+      final taskSeekerId = currentUser?.uid;
       await FirebaseFirestore.instance.collection('tasks').add({
-        'userId': userId,
+        'taskSeekerId': taskSeekerId,
         'title': _taskTitleController.text.trim(),
         'description': _taskDescriptionController.text.trim(),
         'budget': double.parse(_taskBudgetController.text.trim()),
         'image': imageUrl,
         'createdAt': FieldValue.serverTimestamp(),
+        'status': 'Not Applied', // Include the status field with the value "Not Applied"
       });
 
       // Reset the form fields after posting the task
