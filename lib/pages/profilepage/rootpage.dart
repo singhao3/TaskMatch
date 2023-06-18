@@ -2,9 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:taskmatch/pages/profilepage/changepassword.dart';
 import 'package:taskmatch/pages/profilepage/customform.dart';
 import 'package:taskmatch/pages/profilepage/update_profile_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:taskmatch/auth.dart';
 
-class RootPage extends StatelessWidget {
+class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _RootPageState createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  String? userType;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserType();
+  }
+
+  Future<void> fetchUserType() async {
+    User? user = Auth().currentUser;
+    if (user != null) {
+      final uid = user.uid;
+      final taskSeekersSnapshot = await FirebaseFirestore.instance
+          .collection('task_seekers')
+          .doc(uid)
+          .get();
+      final taskDoersSnapshot = await FirebaseFirestore.instance
+          .collection('task_doers')
+          .doc(uid)
+          .get();
+
+      if (taskSeekersSnapshot.exists) {
+        setState(() {
+          userType = 'Task Seekers';
+        });
+      } else if (taskDoersSnapshot.exists) {
+        setState(() {
+          userType = 'Task Doers';
+        });
+      }
+    }
+  }
 
   void navigateToUpdateProfile(BuildContext context) {
     Navigator.push(
@@ -19,19 +61,19 @@ class RootPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white, 
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
-                Text(
+                const Text(
                   '    Profile',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black, 
+                    color: Colors.black,
                   ),
                 ),
                 const Spacer(),
@@ -49,8 +91,8 @@ class RootPage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Task-seekers',
-                        style: TextStyle(
+                        userType ?? '',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -61,7 +103,7 @@ class RootPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -69,24 +111,22 @@ class RootPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      MyCustomForm(),
-                      SizedBox(height: 20),
+                      const MyCustomForm(),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () => navigateToUpdateProfile(context),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32.0, vertical: 12.0),
-                          backgroundColor:
-                              Colors.green, 
-                          foregroundColor:
-                              Colors.white, 
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
                         child: const Text('Update Profile'),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -100,17 +140,15 @@ class RootPage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32.0, vertical: 12.0),
-                          primary:
-                              Colors.green, // Set the button color to green
-                          onPrimary:
-                              Colors.white, // Set the text color to white
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
                         child: const Text('Change Password'),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),

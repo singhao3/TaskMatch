@@ -20,10 +20,11 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    fetchTaskSeekerData();
+    fetchTaskDoerData();
   }
 
-  Future<void> fetchUserData() async {
+  Future<void> fetchTaskSeekerData() async {
     final uid = user?.uid;
     if (uid != null) {
       final snapshot = await FirebaseFirestore.instance
@@ -35,10 +36,27 @@ class MyCustomFormState extends State<MyCustomForm> {
         setState(() {
           username = data['name'] ?? '';
           phoneNumber = data['phoneNumber'] ?? '';
-          _isLoading = false; 
+          _isLoading = false;
         });
       }
-      print('Username: $username'); 
+    }
+  }
+
+  Future<void> fetchTaskDoerData() async {
+    final uid = user?.uid;
+    if (uid != null) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('task_doers')
+          .doc(uid)
+          .get();
+      final data = snapshot.data();
+      if (data != null) {
+        setState(() {
+          username = data['name'] ?? '';
+          phoneNumber = data['phoneNumber'] ?? '';
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -47,7 +65,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Container(
       color: Colors.white,
       child: _isLoading
-          ? CircularProgressIndicator() // Show loading indicator while data is being fetched
+          ? const CircularProgressIndicator() // Show loading indicator while data is being fetched
           : Form(
               key: _formKey,
               child: Column(
@@ -56,7 +74,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   TextFormField(
                     initialValue: username ?? '', // Pass the username value as a String
                     readOnly: false,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.person, color: Colors.green),
                       labelText: 'Name',
                       labelStyle: TextStyle(color: Colors.green),
@@ -67,13 +85,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                         borderSide: BorderSide(color: Colors.green),
                       ),
                     ),
-                    style: TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.green),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     initialValue: user?.email,
                     readOnly: false,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.email, color: Colors.green),
                       labelText: 'Email Address',
                       labelStyle: TextStyle(color: Colors.green),
@@ -84,13 +102,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                         borderSide: BorderSide(color: Colors.green),
                       ),
                     ),
-                    style: TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.green),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
                     initialValue: phoneNumber ?? '',
                     readOnly: false,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       icon: Icon(Icons.phone, color: Colors.green),
                       labelText: 'Phone Number',
                       labelStyle: TextStyle(color: Colors.green),
@@ -101,7 +119,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         borderSide: BorderSide(color: Colors.green),
                       ),
                     ),
-                    style: TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.green),
                   ),
                 ],
               ),
