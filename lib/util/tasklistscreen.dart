@@ -15,7 +15,7 @@ class TaskListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task List'),
+        title: Text('Task Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -117,16 +117,18 @@ class TaskListScreen extends StatelessWidget {
   }
 
   void _applyForTask() {
-    // Retrieve the current user's ID
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final taskDoerId = user.uid; // Use the user's ID as the task doer's ID
-      final taskId = document.id; // Assuming the document ID is the task ID
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    final taskDoerId = user.uid;
+    final taskId = document.id;
 
-      FirebaseFirestore.instance
-          .collection('tasks')
-          .doc(taskId)
-          .update({'applicants': FieldValue.arrayUnion([taskDoerId])});
-    }
+    FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(taskId)
+        .update({
+      'applicants': FieldValue.arrayUnion([taskDoerId]),
+      'status': 'Applied', // Update the status of the task to "Applied"
+    });
   }
+}
 }
