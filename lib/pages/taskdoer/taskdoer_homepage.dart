@@ -8,6 +8,8 @@ import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
 
+import '../notification.dart';
+
 class TaskDoerHome extends StatefulWidget {
   const TaskDoerHome({Key? key}) : super(key: key);
 
@@ -90,7 +92,13 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Handle notifications
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      NotificationPage(), // Navigate to the NotificationPage
+                ),
+              );
             },
           ),
         ],
