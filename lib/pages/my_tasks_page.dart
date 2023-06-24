@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'update_task_page.dart';
 
 class MyTasksPage extends StatefulWidget {
-  const MyTasksPage({Key? key}) : super(key: key); 
+  const MyTasksPage({Key? key}) : super(key: key);
 
   @override
   _MyTasksPageState createState() => _MyTasksPageState();
@@ -20,7 +20,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
     _currentUser = FirebaseAuth.instance.currentUser!;
     _tasksStream = FirebaseFirestore.instance
         .collection('tasks')
-        .where('userId', isEqualTo: _currentUser.uid)
+        .where('taskSeekerId', isEqualTo: _currentUser.uid)
         .snapshots();
   }
 
@@ -28,7 +28,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Tasks'), 
+        title: const Text('My Tasks'),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: _tasksStream,
@@ -48,12 +48,12 @@ class _MyTasksPageState extends State<MyTasksPage> {
                   title: Text(title),
                   subtitle: Text(description),
                   trailing: IconButton(
-                    icon: const Icon(Icons.edit), 
+                    icon: const Icon(Icons.edit),
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UpdateTaskPage(taskId: taskId),
+                          builder: (context) => UpdateTaskPage(),
                         ),
                       );
                     },
@@ -64,7 +64,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return const Center(child: CircularProgressIndicator()); 
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),

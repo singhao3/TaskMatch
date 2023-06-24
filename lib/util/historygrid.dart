@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:taskmatch/pages/rating_page.dart';
 
 class HistoryGrid extends StatelessWidget {
-  const HistoryGrid({super.key, Key? key1});
+  const HistoryGrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class HistoryGrid extends StatelessWidget {
 class TaskDetailsScreen extends StatelessWidget {
   final String taskId;
 
-  const TaskDetailsScreen({super.key, Key? key2, required this.taskId});
+  const TaskDetailsScreen({Key? key, required this.taskId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +121,7 @@ class TaskDetailsScreen extends StatelessWidget {
         title: const Text('Task Details'),
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('tasks')
-            .doc(taskId)
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('tasks').doc(taskId).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -264,18 +262,86 @@ class TaskDetailsScreen extends StatelessWidget {
                       child: const Text('Mark as Completed'),
                     ),
                   if (status == 'Completed' && isTaskSeeker)
-                    ElevatedButton(
-                      onPressed: () => initiatePayment(),
-                      child: const Text('Proceed to Payment'),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            FirebaseFirestore.instance
+                                .collection('task_ratings')
+                                .where('taskId', isEqualTo: taskId)
+                                .snapshots()
+                                .listen((snapshot) {
+                              if (snapshot.docs.isEmpty) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RatingPage(taskId: taskId),
+                                  ),
+                                );
+                              } else {
+                                final rating = snapshot.docs[0].data();
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: Text('Task Completed'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Performance Ratings'),
+                                        Text(
+                                          'Communication: ${rating['communication']}',
+                                        ),
+                                        Text(
+                                          'Efficiency: ${rating['efficiency']}',
+                                        ),
+                                        Text(
+                                          'Overall: ${rating['overall']}',
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Close'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: const Text('Rate Performance'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            initiatePayment();
+                          },
+                          child: const Text('Proceed to Payment'),
+                        ),
+                      ],
                     ),
-                  if (status == 'Completed' && !isTaskSeeker)
-                    const Text(
-                      'Waiting for Task-Seeker to Pay',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  const SizedBox(height: 24),
+                  if (status == 'Active' && !isTaskSeeker)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            updateTaskStatus('Completed');
+                          },
+                          child: const Text('Mark as Completed'),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            initiatePayment();
+                          },
+                          child: const Text('Initiate Payment'),
+                        ),
+                      ],
                     ),
                 ],
               ),
