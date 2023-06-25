@@ -44,6 +44,10 @@ dependencies:
   firebase_storage: ^11.2.1
   firebase_messaging: ^14.6.3
   rxdart: ^0.27.7
+  flutter_stripe: ^9.2.2
+  http: ^0.13.1
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:
