@@ -7,9 +7,6 @@ const logger = require("firebase-functions/logger");
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-const admin = require('firebase-admin');
-admin.initializeApp();
-
 const calculatedOrderAmount = async (taskId) => {
   try {
     const taskSnapshot = await admin.firestore().collection('tasks').doc(taskId).get();
@@ -49,22 +46,38 @@ const generateResponse = function (intent) {
 }
 
 exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) => {
-    const { paymentMethodId, items, currency, useStripeSdk, } = req.body;
-
-    const orderAmount = calculatedOrderAmount(items);
-
+    const { paymentMethodId, items, currency, useStripeSdk } = req.body;
+  
     try {
-        if (paymentMethodId) {
-            const params = {
-                amount: orderAmount,
-                confirm: true,
-                confirmation_method: 'manual',
-                currency: currency,
-                payment_method: paymentMethodId,
-                use_stripe_sdk: useStripeSdk
-            }
-            const intent = await stripe.paymentIntents.create(params);
-            console.log(`Intent: ${intent}`);
+      const orderAmount = 1200;
+  
+      if (paymentMethodId) {
+        const params = {
+          amount: orderAmount,
+          confirm: true,
+          confirmation_method: 'manual',
+          currency: currency,
+          payment_method: paymentMethodId,
+          use_stripe_sdk: useStripeSdk,
+        };
+        const intent = await stripe.paymentIntents.create(params);
+        console.log(`Intent: ${intent}`);
+        return res.send(generateResponse(intent));
+      }
+  
+      return res.sendStatus(400);
+    } catch (e) {
+      return res.send({ error: e.message });
+    }
+  });
+  
+
+
+exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
+    const { paymentIntentId } = req.body;
+    try {
+        if (paymentIntentId) {
+            const intent = await stripe.paymentIntents.confirm(paymentIntentId);
             return res.send(generateResponse(intent));
         }
         return res.sendStatus(400);
@@ -72,16 +85,4 @@ exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) =
         return res.send({ error: e.message });
     }
 });
-
-exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
-    const { paymentIntentId } = req.body;
-    try {
-        if (paymentIntentId) {
-            const intent = await stripe.paymentIntents.confirm(paymentIntentId);
-            return res.send(generateResponse(intnet));
-        }
-        return res.sendStatus(400);
-    } catch (e) {
-        return res.send({ error: e.message });
-    }
-});
+4

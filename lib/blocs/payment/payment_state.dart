@@ -24,5 +24,3 @@ class PaymentState extends Equatable {
   @override
   List<Object> get props => [status, cardFieldInputDetails];
 }
-
-

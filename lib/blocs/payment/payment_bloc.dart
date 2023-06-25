@@ -23,40 +23,33 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   }
 
   void _onPaymentCreateIntent(
-    PaymentCreateIntent event,
-    Emitter<PaymentState> emit,
-  ) async {
-    emit(state.copyWith(status: PaymentStatus.loading));
+  PaymentCreateIntent event,
+  Emitter<PaymentState> emit,
+) async {
+  emit(state.copyWith(status: PaymentStatus.loading));
 
-    final paymentMethod = await Stripe.instance.createPaymentMethod(
-      params: PaymentMethodParams.card(
-        paymentMethodData:
-            PaymentMethodData(billingDetails: event.billingDetails),
-      ),
-    );
+  final paymentMethod = await Stripe.instance.createPaymentMethod(
+    params: PaymentMethodParams.card(
+      paymentMethodData: PaymentMethodData(billingDetails: event.billingDetails),
+    ),
+  );
 
-    final paymentIntentResults = await _callPayEndpointMethodId(
-      useStripeSdk: true,
-      paymentMethodId: paymentMethod.id,
-      currency: 'usd',
-      taskId: event.taskId,
-    );
+  final paymentIntentResults = await _callPayEndpointMethodId(
+    useStripeSdk: true,
+    paymentMethodId: paymentMethod.id,
+    currency: 'usd',
+    taskId: event.taskId,
+  );
 
-    if (paymentIntentResults['error'] != null) {
-      emit(state.copyWith(status: PaymentStatus.failure));
-    }
-
-    if (paymentIntentResults['clientSecret'] != null &&
-        paymentIntentResults['requiresAction'] == null) {
-      emit(state.copyWith(status: PaymentStatus.success));
-    }
-
-    if (paymentIntentResults['clientSecret'] != null &&
-        paymentIntentResults['requiresAction'] == true) {
-      final String clientSecret = paymentIntentResults['clientSecret'];
-      add(PaymentConfirmIntent(clientSecret: clientSecret));
-    }
+  if (paymentIntentResults['error'] != null) {
+    print('Payment failed');
+    emit(state.copyWith(status: PaymentStatus.failure));
+  } else {
+    print('Payment success');
+    emit(state.copyWith(status: PaymentStatus.success));
   }
+}
+
 
   void _onPaymentConfirmIntent(
     PaymentConfirmIntent event,
@@ -116,6 +109,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         'taskId': taskId,
       }),
     );
+
+    print('Pay Endpoint Method ID Response: ${response.body}');
     return json.decode(response.body);
   }
 }
