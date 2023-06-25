@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:taskmatch/pages/rating_page.dart';
+import 'package:taskmatch/util/payment_page.dart';
+
 
 class HistoryGrid extends StatelessWidget {
   const HistoryGrid({Key? key}) : super(key: key);
@@ -121,7 +123,10 @@ class TaskDetailsScreen extends StatelessWidget {
         title: const Text('Task Details'),
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('tasks').doc(taskId).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('tasks')
+            .doc(taskId)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -153,8 +158,7 @@ class TaskDetailsScreen extends StatelessWidget {
             FirebaseFirestore.instance
                 .collection('tasks')
                 .doc(taskId)
-                .update({'status': newStatus})
-                .then((_) {
+                .update({'status': newStatus}).then((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Task status updated')),
               );
@@ -165,12 +169,15 @@ class TaskDetailsScreen extends StatelessWidget {
             });
           }
 
-          void initiatePayment() {
-            // Implement your payment logic here
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Payment initiated')),
-            );
-          }
+          void initiatePayment(BuildContext context, String taskId, double amount) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PaymentPage(taskId: taskId, amount: amount),
+    ),
+  );
+}
+
 
           final isTaskSeeker = userId == task['taskSeekerId'];
 
@@ -276,7 +283,8 @@ class TaskDetailsScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => RatingPage(taskId: taskId),
+                                    builder: (context) =>
+                                        RatingPage(taskId: taskId),
                                   ),
                                 );
                               } else {
@@ -284,11 +292,11 @@ class TaskDetailsScreen extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (_) => AlertDialog(
-                                    title: Text('Task Completed'),
+                                    title: const Text('Task Completed'),
                                     content: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text('Performance Ratings'),
+                                        const Text('Performance Ratings'),
                                         Text(
                                           'Communication: ${rating['communication']}',
                                         ),
@@ -305,7 +313,7 @@ class TaskDetailsScreen extends StatelessWidget {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Close'),
+                                        child: const Text('Close'),
                                       ),
                                     ],
                                   ),
@@ -317,7 +325,7 @@ class TaskDetailsScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            initiatePayment();
+                            initiatePayment(context, taskId, budget);
                           },
                           child: const Text('Proceed to Payment'),
                         ),
@@ -337,7 +345,7 @@ class TaskDetailsScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
-                            initiatePayment();
+                            initiatePayment(context, taskId, budget);
                           },
                           child: const Text('Initiate Payment'),
                         ),
