@@ -3,11 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taskmatch/NavPages/discover.dart';
 import 'package:taskmatch/NavPages/history.dart';
 import 'package:taskmatch/pages/taskdoer/taskdoer_home.dart';
-import 'package:taskmatch/NavPages/message.dart';
+import 'package:taskmatch/NavPages/location.dart';
 import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../util/locationgridtaskseeker.dart';
 import '../notification.dart';
 
 class TaskDoerHome extends StatefulWidget {
@@ -52,7 +53,7 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
     Discover(),
     history(),
     Home(),
-    message(),
+    locationtaskdoer(),
     profile(),
   ];
 
@@ -206,8 +207,8 @@ class _TaskDoerHomeState extends State<TaskDoerHome> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
+            icon: Icon(Icons.location_city_sharp),
+            label: 'Location',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

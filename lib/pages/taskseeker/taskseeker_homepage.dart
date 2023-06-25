@@ -2,8 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taskmatch/NavPages/discover.dart';
 import 'package:taskmatch/NavPages/history.dart';
+import 'package:taskmatch/NavPages/locationtaskseeker.dart';
 import 'package:taskmatch/pages/taskseeker/taskseeker_home.dart';
-import 'package:taskmatch/NavPages/message.dart';
+import 'package:taskmatch/NavPages/location.dart';
 import 'package:taskmatch/NavPages/profile.dart';
 import 'package:taskmatch/auth.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _HomePageState extends State<TaskSeekerHome> {
     Discover(),
     history(),
     Home(),
-    message(),
+    locationtaskseeker(),
     profile(),
   ];
 
@@ -206,8 +207,8 @@ class _HomePageState extends State<TaskSeekerHome> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
+            icon: Icon(Icons.location_city),
+            label: 'Location',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
