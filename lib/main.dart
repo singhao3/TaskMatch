@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import "package:flutter_stripe/flutter_stripe.dart";
 import 'package:taskmatch/.env';
 
-import 'blocs/blocs.dart';// Import your PaymentBloc
+import 'blocs/blocs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PaymentBloc>(
-      create: (context) => PaymentBloc(), // Create an instance of your PaymentBloc
+      create: (context) => PaymentBloc(),
       child: MaterialApp(
         title: 'TaskMatch',
         theme: ThemeData(
