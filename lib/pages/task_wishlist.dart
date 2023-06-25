@@ -85,11 +85,9 @@ class _TaskSeekerPageState extends State<TaskSeekerPage> {
     if (uid != null) {
       final snapshot = await taskWatchlistRef.doc(uid).get();
       final data = snapshot.data() as Map<String, dynamic>; // Specify the type of 'data'
-      if (data != null) {
-        setState(() {
-          watchlistTasks = List<String>.from(data['tasks'] ?? []);
-        });
-      }
+      setState(() {
+        watchlistTasks = List<String>.from(data['tasks'] ?? []);
+      });
     }
   }
 

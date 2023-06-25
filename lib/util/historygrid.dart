@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:taskmatch/pages/rating_page.dart';
+import 'package:taskmatch/util/payment_page.dart';
+
 
 class HistoryGrid extends StatelessWidget {
-  const HistoryGrid({super.key, Key? key1});
+  const HistoryGrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +111,7 @@ class HistoryGrid extends StatelessWidget {
 class TaskDetailsScreen extends StatelessWidget {
   final String taskId;
 
-  const TaskDetailsScreen({super.key, Key? key2, required this.taskId});
+  const TaskDetailsScreen({Key? key, required this.taskId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +158,7 @@ class TaskDetailsScreen extends StatelessWidget {
             FirebaseFirestore.instance
                 .collection('tasks')
                 .doc(taskId)
-                .update({'status': newStatus})
-                .then((_) {
+                .update({'status': newStatus}).then((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Task status updated')),
               );
@@ -167,12 +169,15 @@ class TaskDetailsScreen extends StatelessWidget {
             });
           }
 
-          void initiatePayment() {
-            // Implement your payment logic here
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Payment initiated')),
-            );
-          }
+          void initiatePayment(BuildContext context, String taskId, double amount) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PaymentPage(taskId: taskId, amount: amount),
+    ),
+  );
+}
+
 
           final isTaskSeeker = userId == task['taskSeekerId'];
 
@@ -264,18 +269,87 @@ class TaskDetailsScreen extends StatelessWidget {
                       child: const Text('Mark as Completed'),
                     ),
                   if (status == 'Completed' && isTaskSeeker)
-                    ElevatedButton(
-                      onPressed: () => initiatePayment(),
-                      child: const Text('Proceed to Payment'),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            FirebaseFirestore.instance
+                                .collection('task_ratings')
+                                .where('taskId', isEqualTo: taskId)
+                                .snapshots()
+                                .listen((snapshot) {
+                              if (snapshot.docs.isEmpty) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RatingPage(taskId: taskId),
+                                  ),
+                                );
+                              } else {
+                                final rating = snapshot.docs[0].data();
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: const Text('Task Completed'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text('Performance Ratings'),
+                                        Text(
+                                          'Communication: ${rating['communication']}',
+                                        ),
+                                        Text(
+                                          'Efficiency: ${rating['efficiency']}',
+                                        ),
+                                        Text(
+                                          'Overall: ${rating['overall']}',
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: const Text('Rate Performance'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            initiatePayment(context, taskId, budget);
+                          },
+                          child: const Text('Proceed to Payment'),
+                        ),
+                      ],
                     ),
-                  if (status == 'Completed' && !isTaskSeeker)
-                    const Text(
-                      'Waiting for Task-Seeker to Pay',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  const SizedBox(height: 24),
+                  if (status == 'Active' && !isTaskSeeker)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            updateTaskStatus('Completed');
+                          },
+                          child: const Text('Mark as Completed'),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            initiatePayment(context, taskId, budget);
+                          },
+                          child: const Text('Initiate Payment'),
+                        ),
+                      ],
                     ),
                 ],
               ),

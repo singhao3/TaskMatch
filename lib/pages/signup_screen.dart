@@ -57,7 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
         // Navigate to the appropriate home screen based on role
         navigateToHomeScreen(user.uid);
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setState(() {
         // Handle any signup errors here
       });
